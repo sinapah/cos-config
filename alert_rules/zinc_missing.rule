@@ -1,0 +1,10 @@
+alert: PepeTargetMissingRemote
+expr: up{juju_application="PepeApp"} == 0
+for: 0m
+labels:
+  severity: critical
+  origin: github
+  gitbranch: main
+annotations:
+  summary: Prometheus target missing (instance {{ $labels.instance }})
+  description: "A Prometheus target has disappeared. An exporter might be crashed.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
