@@ -1,0 +1,100 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "dummy-dashboard-123",
+    "title": "Dummy Grafana Dashboard",
+    "tags": ["example", "dummy"],
+    "timezone": "browser",
+    "schemaVersion": 27,
+    "version": 1,
+    "refresh": "5s",
+    "panels": [
+      {
+        "type": "graph",
+        "title": "Dummy Metric 1",
+        "datasource": "Dummy Data Source",
+        "targets": [
+          {
+            "target": "dummy.metric1",
+            "refId": "A"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 0
+        },
+        "legend": {
+          "show": true
+        },
+        "lines": true,
+        "fill": 1
+      },
+      {
+        "type": "graph",
+        "title": "Dummy Metric 2",
+        "datasource": "Dummy Data Source",
+        "targets": [
+          {
+            "target": "dummy.metric2",
+            "refId": "B"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 12,
+          "y": 0
+        },
+        "legend": {
+          "show": true
+        },
+        "lines": true,
+        "fill": 1
+      },
+      {
+        "type": "table",
+        "title": "Dummy Data Table",
+        "datasource": "Dummy Data Source",
+        "targets": [
+          {
+            "target": "dummy.table",
+            "refId": "C"
+          }
+        ],
+        "gridPos": {
+          "h": 8,
+          "w": 12,
+          "x": 0,
+          "y": 8
+        },
+        "columns": [
+          "Time",
+          "Value"
+        ]
+      },
+      {
+        "type": "singlestat",
+        "title": "Dummy Metric Value",
+        "datasource": "Dummy Data Source",
+        "targets": [
+          {
+            "target": "dummy.metric.value",
+            "refId": "D"
+          }
+        ],
+        "gridPos": {
+          "h": 4,
+          "w": 4,
+          "x": 12,
+          "y": 8
+        },
+        "valueName": "current",
+        "prefix": "Value: ",
+        "postfix": " units"
+      }
+    ]
+  },
+  "overwrite": true
+}
