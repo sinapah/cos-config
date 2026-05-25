@@ -1,0 +1,22 @@
+groups:
+  - name: invalid-rule
+    rules:
+      - alert: InvalidRule
+        expr: |
+          sum by (contractID) (
+            rate(
+              {juju_application="something-k8s", juju_model="my-pro"}
+              | json
+              | level = "ERROR"
+              and msg = "Failed to be awesome.
+              | label_format contractID="{{.awesomenessID}}, error="{{.error}}"
+              [15m]
+            )
+          ) > 0
+        for: 15m
+        labels:
+          severity: critical
+          team: awesome-team
+        annotations:
+          summary: Awesomeness failure
+          description: Failed to be awesome for contract {{ $labels.contractID }}
