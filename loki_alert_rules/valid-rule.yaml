@@ -1,0 +1,23 @@
+groups:
+  - name: loki-alerts
+    rules:
+      - alert: PrometheusErrorLogs
+        expr: |
+          sum by (juju_application) (
+            rate(
+              {juju_application="prometheus-k8s", juju_model="observability"}
+              | json
+              | level="ERROR"
+              [15m]
+            )
+          ) > 0
+        for: 15m
+        labels:
+          severity: critical
+          team: observability
+          juju_model_uuid: "123e4567-e89b-12d3-a456-426614174000"
+          juju_application: "prometheus-k8s"
+          juju_model: "observability"
+        annotations:
+          summary: Prometheus error logs detected
+          description: Error logs detected for application {{ $labels.juju_application }}
