@@ -15,7 +15,7 @@ groups:
         labels:
           severity: critical
           team: observability
-          juju_model_uuid: "123e4567-e89b-12d3-a456-426614174000"
+          juju_model_uuid: "e9f39fb5-e6ff-4e0c-82a5-712bdd7e1912"
           juju_application: "prometheus-k8s"
           juju_model: "observability"
         annotations:
