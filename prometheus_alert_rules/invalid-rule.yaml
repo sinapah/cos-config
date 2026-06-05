@@ -1,0 +1,15 @@
+groups:
+  - name: invalid-promql-rule
+    rules:
+      - alert: InvalidPromQLRule
+        expr: |
+          sum by (juju_application) (
+            up{juju_application="prometheus-k8s", juju_model="observability} == 0
+          ) > 0
+        for: 15m
+        labels:
+          severity: critical
+          team: observability
+        annotations:
+          summary: Invalid PromQL rule
+          description: This rule is intentionally invalid for testing.
