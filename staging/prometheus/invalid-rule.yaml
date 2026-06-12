@@ -11,5 +11,5 @@ groups:
           severity: critical
           team: some-team
         annotations:
-          summary: Invalid PromQL rule
+          summary: Invalid PromQL rule 2
           description: This rule is intentionally VERY VERY INVALID FOR TESTING.
