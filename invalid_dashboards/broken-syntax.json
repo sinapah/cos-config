@@ -1,7 +1,7 @@
 {
   "id": null,
   "uid": "broken-syntax-dashboard",
-  "title": "Broken Syntax Dashboard",
+  "title": "Broken JSON Syntax Dashboard",
   "schemaVersion": 39,
   "panels": [
     {

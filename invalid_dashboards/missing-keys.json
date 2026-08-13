@@ -1,18 +1,55 @@
 {
-  "title": "Dashboard Missing Required Keys",
+  "id": null,
+  "uid": "missing-query-key-dashboard",
+  "title": "Missing Query Key In Datasource Template",
+  "description": "Triggers KeyError: 'query' in CharmedDashboard._convert_dashboard_fields. The first entry in templating.list has type=datasource but is missing the required 'query' field. See: https://github.com/canonical/grafana-k8s-operator/issues/582",
+  "tags": ["invalid", "missing-key"],
+  "schemaVersion": 39,
+  "version": 1,
+  "time": { "from": "now-1h", "to": "now" },
+  "timepicker": {},
+  "refresh": "30s",
+  "timezone": "browser",
+  "annotations": { "list": [] },
+  "templating": {
+    "list": [
+      {
+        "hide": 0,
+        "includeAll": true,
+        "label": "Prometheus datasource",
+        "multi": true,
+        "name": "prometheusds",
+        "options": [],
+        "refresh": 1,
+        "type": "datasource"
+      },
+      {
+        "hide": 0,
+        "includeAll": true,
+        "label": "Loki datasource",
+        "multi": true,
+        "name": "lokids",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "type": "datasource"
+      }
+    ]
+  },
   "panels": [
     {
+      "id": 1,
       "type": "timeseries",
       "title": "CPU Usage",
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "datasource": "${prometheusds}",
       "targets": [
         {
-          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
+          "refId": "A",
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "CPU Usage %"
         }
       ]
-    },
-    {
-      "type": "stat",
-      "targets": []
     }
   ]
 }
