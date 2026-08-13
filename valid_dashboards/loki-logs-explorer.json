@@ -1,0 +1,259 @@
+{
+  "id": null,
+  "uid": "loki-logs-explorer",
+  "title": "Loki Logs Explorer",
+  "description": "Explore and analyse log streams from Loki",
+  "tags": ["loki", "logs"],
+  "schemaVersion": 39,
+  "version": 1,
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": ["5s", "10s", "30s", "1m", "5m", "15m", "30m", "1h"],
+    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"]
+  },
+  "refresh": "30s",
+  "timezone": "browser",
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": { "type": "grafana", "uid": "-- Grafana --" },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "current": {},
+        "hide": 0,
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "type": "datasource",
+        "label": "Datasource"
+      },
+      {
+        "current": {},
+        "datasource": { "type": "loki", "uid": "${datasource}" },
+        "definition": "label_values(job)",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "name": "job",
+        "query": "label_values(job)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query",
+        "label": "Job"
+      },
+      {
+        "current": {},
+        "datasource": { "type": "loki", "uid": "${datasource}" },
+        "definition": "label_values({job=~\"$job\"}, instance)",
+        "hide": 0,
+        "includeAll": true,
+        "allValue": ".*",
+        "multi": false,
+        "name": "instance",
+        "query": "label_values({job=~\"$job\"}, instance)",
+        "refresh": 2,
+        "sort": 1,
+        "type": "query",
+        "label": "Instance"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "error|warn|critical",
+          "value": "error|warn|critical"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "name": "level_filter",
+        "options": [
+          { "selected": false, "text": "All", "value": "" },
+          { "selected": false, "text": "Error + Warn", "value": "error|warn|critical" },
+          { "selected": true,  "text": "Error only",  "value": "error|critical" },
+          { "selected": false, "text": "Info",        "value": "info" },
+          { "selected": false, "text": "Debug",       "value": "debug" }
+        ],
+        "query": "All,Error + Warn : error|warn|critical,Error only : error|critical,Info : info,Debug : debug",
+        "type": "custom",
+        "label": "Level Filter"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Total Log Lines",
+      "description": "Total number of log lines ingested in the selected time range",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [{ "color": "blue", "value": null }]
+          },
+          "color": { "mode": "thresholds" }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "expr": "sum(count_over_time({job=~\"$job\", instance=~\"$instance\"}[$__range]))",
+          "legendFormat": "Total Lines"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "Error Lines",
+      "description": "Log lines matching error or critical level in the selected time range",
+      "gridPos": { "x": 6, "y": 0, "w": 6, "h": 4 },
+      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              { "color": "green", "value": null },
+              { "color": "yellow", "value": 10 },
+              { "color": "red", "value": 100 }
+            ]
+          },
+          "color": { "mode": "thresholds" }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": { "calcs": ["sum"] },
+        "orientation": "auto",
+        "textMode": "auto",
+        "colorMode": "background",
+        "graphMode": "none"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "expr": "sum(count_over_time({job=~\"$job\", instance=~\"$instance\"} |~ \"(?i)(error|critical)\" [$__range]))",
+          "legendFormat": "Error Lines"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "type": "timeseries",
+      "title": "Log Rate Over Time",
+      "description": "Rate of log lines per second, broken down by level",
+      "gridPos": { "x": 0, "y": 4, "w": 24, "h": 8 },
+      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "logs/s",
+          "min": 0,
+          "custom": {
+            "lineWidth": 1,
+            "fillOpacity": 10,
+            "spanNulls": false,
+            "drawStyle": "bars",
+            "barAlignment": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": { "id": "byName", "options": "error" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "red", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "warn" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "orange", "mode": "fixed" } }]
+          },
+          {
+            "matcher": { "id": "byName", "options": "info" },
+            "properties": [{ "id": "color", "value": { "fixedColor": "green", "mode": "fixed" } }]
+          }
+        ]
+      },
+      "options": {
+        "tooltip": { "mode": "multi", "sort": "none" },
+        "legend": { "displayMode": "list", "placement": "bottom" }
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "expr": "sum(rate({job=~\"$job\", instance=~\"$instance\"} |~ \"(?i)error\" [$__interval]))",
+          "legendFormat": "error"
+        },
+        {
+          "refId": "B",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "expr": "sum(rate({job=~\"$job\", instance=~\"$instance\"} |~ \"(?i)warn\" [$__interval]))",
+          "legendFormat": "warn"
+        },
+        {
+          "refId": "C",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "expr": "sum(rate({job=~\"$job\", instance=~\"$instance\"} |~ \"(?i)info\" [$__interval]))",
+          "legendFormat": "info"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "type": "logs",
+      "title": "Log Stream",
+      "description": "Raw log lines for the selected job and instance",
+      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 14 },
+      "datasource": { "type": "loki", "uid": "${datasource}" },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "options": {
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "dedupStrategy": "none"
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": { "type": "loki", "uid": "${datasource}" },
+          "expr": "{job=~\"$job\", instance=~\"$instance\"} |~ \"(?i)($level_filter)\"",
+          "legendFormat": ""
+        }
+      ]
+    }
+  ]
+}
