@@ -1,0 +1,34 @@
+{
+  "id": null,
+  "uid": "broken-syntax-dashboard",
+  "title": "Broken Syntax Dashboard",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "id": 1,
+      "type": "timeseries",
+      "title": "Memory Usage"
+      "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "node_memory_MemAvailable_bytes",
+          "legendFormat": "Available Memory"
+        },
+      ]
+    },
+    {
+      "id": 2
+      "type": "stat",
+      "title": "Uptime",
+      "targets": [
+        {
+          "refId": "A"
+          "expr": "time() - node_boot_time_seconds"
+        }
+      ]
+    }
+  ],
+  "time": { "from": "now-1h", "to": "now" }
+  "refresh": "30s"
+}

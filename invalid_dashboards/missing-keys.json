@@ -1,0 +1,18 @@
+{
+  "title": "Dashboard Missing Required Keys",
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "CPU Usage",
+      "targets": [
+        {
+          "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "targets": []
+    }
+  ]
+}
