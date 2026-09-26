@@ -25,7 +25,7 @@ groups:
         labels:
           severity: warning
           team: unknown
-          juju_model_uuid: "some-uuid"
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
           juju_application: "rule-two-k8s"
           juju_model: "observability"
         annotations:
@@ -40,7 +40,7 @@ groups:
         labels:
           severity: warning
           team: unknown
-          juju_model_uuid: "some-uuid"
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
           juju_application: "rule-three-k8s"
           juju_model: "observability"
         annotations:
@@ -72,7 +72,7 @@ groups:
         labels:
           severity: warning
           team: unknown
-          juju_model_uuid: "some-uuid"
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
           juju_application: "some-charm-vm"
           juju_model: "observability"
         annotations:
@@ -87,7 +87,7 @@ groups:
         labels:
           severity: warning
           team: unknown
-          juju_model_uuid: "some-uuid"
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
           juju_application: "some-charm-k8s"
           juju_model: "observability"
         annotations:
