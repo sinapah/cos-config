@@ -13,6 +13,8 @@ groups:
           juju_model_uuid: "e9f39fb5-e6ff-4e0c-82a5-712bdd7e1912"
           juju_application: "rule-one-k8s"
           juju_model: "observability"
+          environment: "staging"
+          zone: "can-east"
         annotations:
           summary: A valid rule
           description: At least one scrape target is down for {{ $labels.juju_application }}
@@ -28,6 +30,8 @@ groups:
           juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
           juju_application: "rule-two-k8s"
           juju_model: "observability"
+          environment: "production"
+          zone: "can-east"
         annotations:
           summary: Second valid rule
           description: At least one scrape target is down for {{ $labels.juju_application }}
@@ -43,6 +47,8 @@ groups:
           juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
           juju_application: "rule-three-k8s"
           juju_model: "observability"
+          environment: "production"
+          zone: "can-west"
         annotations:
           summary: Third valid rule
           description: At least one scrape target is down for {{ $labels.juju_application }}
