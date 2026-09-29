@@ -1,23 +1,106 @@
 groups:
-  - name: loki-alerts
+  - name: first-group
     rules:
-      - alert: PrometheusErrorLogs
+      - alert: ValidRuleOneGroupOne
         expr: |
           sum by (juju_application) (
-            rate(
-              {juju_application="prometheus-k8s", juju_model="observability"}
-              | json
-              | level="ERROR"
-              [15m]
-            )
+            rate(prometheus_operator_errors_total{juju_application="rule-one-k8s", juju_model="observability"}[15m])
           ) > 0
         for: 15m
         labels:
           severity: critical
           team: observability
           juju_model_uuid: "e9f39fb5-e6ff-4e0c-82a5-712bdd7e1912"
-          juju_application: "prometheus-k8s"
+          juju_application: "rule-one-k8s"
+          juju_model: "observability"
+          environment: "staging"
+          zone: "can-east"
+        annotations:
+          summary: High error rate detected
+          description: Application {{ $labels.juju_application }} is emitting errors above threshold.
+
+      - alert: ValidRuleTwoGroupOne
+        expr: |
+          sum by (juju_application) (
+            increase(process_panics_total{juju_application="rule-two-k8s", juju_model="observability"}[10m])
+          ) > 0
+        for: 15m
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "rule-two-k8s"
+          juju_model: "observability"
+          environment: "production"
+          zone: "can-east"
+        annotations:
+          summary: Critical system event logged
+          description: Process panic encountered for {{ $labels.juju_application }}.
+
+      - alert: ValidRuleThreeGroupOne
+        expr: |
+          sum by (juju_application) (
+            rate(http_requests_total{juju_application="rule-three-k8s", juju_model="observability", status=~"5.."}[5m])
+          ) > 5
+        for: 15m
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "rule-three-k8s"
+          juju_model: "observability"
+          environment: "production"
+          zone: "can-west"
+        annotations:
+          summary: HTTP 5xx response spike
+          description: Excessive 5xx status codes observed for {{ $labels.juju_application }}.
+
+  - name: second-group
+    rules:
+      - alert: ValidRuleOneGroupTwo
+        expr: |
+          sum by (juju_application) (
+            rate(log_messages_total{juju_application="some-charm-k8s", juju_model="observability", level="WARN"}[10m])
+          ) > 100
+        for: 15m
+        labels:
+          severity: critical
+          team: observability
+          juju_model_uuid: "e9f39fb5-e6ff-4e0c-82a5-712bdd7e1912"
+          juju_application: "some-charm-k8s"
           juju_model: "observability"
         annotations:
-          summary: Prometheus error logs detected
-          description: Error logs detected for application {{ $labels.juju_application }}
+          summary: High warning log volume
+          description: Warning log rate exceeded threshold for {{ $labels.juju_application }}.
+
+      - alert: ValidRuleTwoGroupTwo
+        expr: |
+          sum by (juju_application) (
+            increase(connection_errors_total{juju_application="some-charm-vm", juju_model="observability"}[5m])
+          ) > 10
+        for: 15m
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "some-charm-vm"
+          juju_model: "observability"
+        annotations:
+          summary: Connection errors logged
+          description: Multiple connection errors observed for {{ $labels.juju_application }}.
+
+      - alert: ValidRuleThreeGroupTwo
+        expr: |
+          sum by (juju_application) (
+            rate(authentication_failures_total{juju_application="some-charm-k8s", juju_model="observability"}[5m])
+          ) > 20
+        for: 15m
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "some-charm-k8s"
+          juju_model: "observability"
+        annotations:
+          summary: Authentication failures detected
+          description: High volume of failed authentication events for {{ $labels.juju_application }}.

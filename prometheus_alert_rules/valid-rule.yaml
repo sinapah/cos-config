@@ -4,12 +4,7 @@ groups:
       - alert: ValidRuleOneGroupOne
         expr: |
           sum by (juju_application) (
-            rate(
-              {juju_application="rule-one-k8s", juju_model="observability"}
-              | json
-              | level="ERROR"
-              [15m]
-            )
+            up{juju_application="some-charm-k8s", juju_model="observability"} == 0
           ) > 0
         for: 15m
         labels:
@@ -21,17 +16,12 @@ groups:
           environment: "staging"
           zone: "can-east"
         annotations:
-          summary: High error rate detected
-          description: Application {{ $labels.juju_application }} is emitting error logs above threshold.
-
+          summary: A valid rule
+          description: At least one scrape target is down for {{ $labels.juju_application }}
       - alert: ValidRuleTwoGroupOne
         expr: |
           sum by (juju_application) (
-            count_over_time(
-              {juju_application="rule-two-k8s", juju_model="observability"}
-              |~ "(?i)panic|fatal|oom-killer"
-              [10m]
-            )
+            up{juju_application="some-charm-k8s", juju_model="observability"} == 0
           ) > 0
         for: 15m
         labels:
@@ -43,19 +33,13 @@ groups:
           environment: "production"
           zone: "can-east"
         annotations:
-          summary: Critical system event logged
-          description: Panic or OOM log pattern encountered for {{ $labels.juju_application }}.
-
+          summary: Second valid rule
+          description: At least one scrape target is down for {{ $labels.juju_application }}
       - alert: ValidRuleThreeGroupOne
         expr: |
           sum by (juju_application) (
-            rate(
-              {juju_application="rule-three-k8s", juju_model="observability"}
-              | logfmt
-              | status >= 500
-              [5m]
-            )
-          ) > 5
+            up{juju_application="some-charm-k8s", juju_model="observability"} == 0
+          ) > 0
         for: 15m
         labels:
           severity: warning
@@ -66,21 +50,15 @@ groups:
           environment: "production"
           zone: "can-west"
         annotations:
-          summary: HTTP 5xx log response spike
-          description: Excessive 5xx status codes logged for {{ $labels.juju_application }}.
-
+          summary: Third valid rule
+          description: At least one scrape target is down for {{ $labels.juju_application }}
   - name: second-group
     rules:
       - alert: ValidRuleOneGroupTwo
         expr: |
           sum by (juju_application) (
-            rate(
-              {juju_application="some-charm-k8s", juju_model="observability"}
-              | json
-              | level="WARN"
-              [10m]
-            )
-          ) > 100
+            up{juju_application="some-charm-k8s", juju_model="observability"} == 0
+          ) > 0
         for: 15m
         labels:
           severity: critical
@@ -89,18 +67,13 @@ groups:
           juju_application: "some-charm-k8s"
           juju_model: "observability"
         annotations:
-          summary: High warning log volume
-          description: Warning log rate exceeded threshold for {{ $labels.juju_application }}.
-
+          summary: A valid rule
+          description: At least one scrape target is down for {{ $labels.juju_application }}
       - alert: ValidRuleTwoGroupTwo
         expr: |
           sum by (juju_application) (
-            count_over_time(
-              {juju_application="some-charm-vm", juju_model="observability"}
-              |~ "(?i)connection refused|timeout"
-              [5m]
-            )
-          ) > 10
+            up{juju_application="some-charm-k8s", juju_model="observability"} == 0
+          ) > 0
         for: 15m
         labels:
           severity: warning
@@ -109,19 +82,13 @@ groups:
           juju_application: "some-charm-vm"
           juju_model: "observability"
         annotations:
-          summary: Connection errors logged
-          description: Multiple connection refusal or timeout logs observed for {{ $labels.juju_application }}.
-
+          summary: Second valid rule
+          description: At least one scrape target is down for {{ $labels.juju_application }}
       - alert: ValidRuleThreeGroupTwo
         expr: |
           sum by (juju_application) (
-            rate(
-              {juju_application="some-charm-k8s", juju_model="observability"}
-              | json
-              | event="authentication_failed"
-              [5m]
-            )
-          ) > 20
+            up{juju_application="some-charm-k8s", juju_model="observability"} == 0
+          ) > 0
         for: 15m
         labels:
           severity: warning
@@ -130,5 +97,5 @@ groups:
           juju_application: "some-charm-k8s"
           juju_model: "observability"
         annotations:
-          summary: Authentication failures detected
-          description: High volume of failed authentication events for {{ $labels.juju_application }}.
+          summary: Third valid rule
+          description: At least one scrape target is down for {{ $labels.juju_application }}
