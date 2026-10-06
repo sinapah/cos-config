@@ -1,5 +1,5 @@
 groups:
-  - name: first-group
+  - name: first-recording-group
     rules:
       - record: HighErrorRate
         expr: sum by (juju_application) (rate({juju_application="rule-one-k8s", juju_model="observability"} | json | level="ERROR" [15m]))
@@ -34,7 +34,7 @@ groups:
           environment: "production"
           zone: "can-west"
 
-  - name: second-group
+  - name: second-recording-group
     rules:
       - record: WarningLogRate
         expr: sum by (juju_application) (rate({juju_application="some-charm-k8s", juju_model="observability"} | json | level="WARN" [10m]))
