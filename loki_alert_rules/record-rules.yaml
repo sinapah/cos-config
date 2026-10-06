@@ -1,0 +1,64 @@
+groups:
+  - name: first-group
+    rules:
+      - record: HighErrorRate
+        expr: sum by (juju_application) (rate({juju_application="rule-one-k8s", juju_model="observability"} | json | level="ERROR" [15m]))
+        labels:
+          severity: critical
+          team: observability
+          juju_model_uuid: "e9f39fb5-e6ff-4e0c-82a5-712bdd7e1912"
+          juju_application: "rule-one-k8s"
+          juju_model: "observability"
+          environment: "staging"
+          zone: "can-east"
+
+      - record: CriticalEventCount
+        expr: sum by (juju_application) (count_over_time({juju_application="rule-two-k8s", juju_model="observability"} |~ "(?i)panic|fatal|oom-killer" [10m]))
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "rule-two-k8s"
+          juju_model: "observability"
+          environment: "production"
+          zone: "can-east"
+
+      - record: Http5xxRate
+        expr: sum by (juju_application) (rate({juju_application="rule-three-k8s", juju_model="observability"} | logfmt | status >= 500 [5m]))
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "rule-three-k8s"
+          juju_model: "observability"
+          environment: "production"
+          zone: "can-west"
+
+  - name: second-group
+    rules:
+      - record: WarningLogRate
+        expr: sum by (juju_application) (rate({juju_application="some-charm-k8s", juju_model="observability"} | json | level="WARN" [10m]))
+        labels:
+          severity: critical
+          team: observability
+          juju_model_uuid: "e9f39fb5-e6ff-4e0c-82a5-712bdd7e1912"
+          juju_application: "some-charm-k8s"
+          juju_model: "observability"
+
+      - record: ConnectionErrorCount
+        expr: sum by (juju_application) (count_over_time({juju_application="some-charm-vm", juju_model="observability"} |~ "(?i)connection refused|timeout" [5m]))
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "some-charm-vm"
+          juju_model: "observability"
+
+      - record: AuthFailureRate
+        expr: sum by (juju_application) (rate({juju_application="some-charm-k8s", juju_model="observability"} | json | event="authentication_failed" [5m]))
+        labels:
+          severity: warning
+          team: unknown
+          juju_model_uuid: "7b3c2e91-4a6f-4d82-9c17-5e8b3f20a6d4"
+          juju_application: "some-charm-k8s"
+          juju_model: "observability"
