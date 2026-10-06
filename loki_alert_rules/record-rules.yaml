@@ -2,13 +2,13 @@ groups:
   - name: log-recording-group
     rules:
       - record: WarningLogRate
-        expr: sum by (juju_application) (rate({} | json | level="WARNING" [5m]))
+        expr: sum by (juju_application) (rate({juju_charm="flog-k8s"} | json | level="WARNING" [5m]))
         labels:
           severity: warning
           team: observability
 
       - record: FatalLogCount
-        expr: sum by (juju_application) (count_over_time({} | json | level="FATAL" [1h]))
+        expr: sum by (juju_application) (count_over_time({juju_charm="flog-k8s"} | json | level="FATAL" [1h]))
         labels:
           severity: critical
           team: observability
